@@ -3,23 +3,18 @@
 class Solution {
 public:
     int minimumAverageDifference(vector<int>& nums) {
+        int n = nums.size();
+        vector<long long> preSum(n, 0L); preSum[0] = nums[0];
+        for (int i=1; i<n; ++i)
+            preSum[i] = preSum[i-1] + nums[i];
         
-        int n(size(nums)), minAverageDifference(INT_MAX), index;
-        
-        long long sumFromFront(0), sumFromEnd(0);
-        for (auto& num : nums) sumFromEnd += num;
-        
-        for (int i=0; i<n; i++) {
-            sumFromFront += nums[i];
-            sumFromEnd -= nums[i];
-            int a = sumFromFront / (i+1); // average of the first i + 1 elements.
-            int b = (i == n-1) ? 0 : sumFromEnd / (n-i-1); // average of the last n - i - 1 elements.
-            
-            if (abs(a-b) < minAverageDifference) {
-                minAverageDifference = abs(a-b);
-                index = i;
-            }
+        int ans = -1, diff = INT_MAX;
+        for (int i=0; i<n; ++i){
+            int ld = abs(preSum[i]/(i+1)-((i == n-1)? 0 : (preSum[n-1]-preSum[i])/(n-i-1)));
+            if (ld < diff)
+                diff = ld, ans = i;
         }
-        return index;
+        
+        return ans;
     }
 };
